@@ -7,11 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = terraformstaterakesh"  # Replace with your S3 bucket name
-    key            = "terraform.tfstate"             # Replace with your desired state file name
-    region         = "us-east-1"                     # Replace with the appropriate region
+    bucket         = "terraformstaterakesh"  # Add the opening quote here
+    key            = "terraform.tfstate"      # Replace with your desired state file name
+    region         = "us-east-1"              # Replace with the appropriate region
     encrypt        = true
-    dynamodb_table = "tf-state-lock-dynamo"               # Optional: Use a DynamoDB table for locking
+    dynamodb_table = "tf-state-lock-dynamo"   # Optional: Use a DynamoDB table for locking
   }
 }
 
@@ -24,3 +24,4 @@ resource "aws_s3_bucket" "new_bucket" {
     Environment = "Prod"
   }
 }
+
