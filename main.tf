@@ -5,11 +5,14 @@ terraform {
       version = "4.12.1"
     }
   }
-}
 
-# Configure the AWS Provider
-provider "aws" {
-  region = "ap-south-1" # define region as per your account
+  backend "s3" {
+    bucket         = terraformstaterakesh"  # Replace with your S3 bucket name
+    key            = "terraform.tfstate"             # Replace with your desired state file name
+    region         = "us-east-1"                     # Replace with the appropriate region
+    encrypt        = true
+    dynamodb_table = "tf-state-lock-dynamo"               # Optional: Use a DynamoDB table for locking
+  }
 }
 
 resource "aws_s3_bucket" "new_bucket" {
