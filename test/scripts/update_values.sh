@@ -27,7 +27,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-grep "tag" ${VALUES_FILE}
+echo "Lines containing 'tag' in ${VALUES_FILE} after update:"
+grep -w "tag" ${VALUES_FILE}
 
 # Display a message indicating the update
 echo "Updated image tag to: ${IMAGE_NAME}"
