@@ -4,22 +4,23 @@
 ENV_NAME=$1
 APP_NAME=$2
 IMAGE_NAME=$3
+VALUES_FILE="${CODEBUILD_SRC_DIR}/${ENV_NAME}/${APP_NAME}/values.yaml"
 
-# Execute the first yq command
-yq_result=$(yq e '.image.tag' ${ENV_NAME}/${APP_NAME}/values.yaml)
-
-# Display the result of the first yq command
-echo "Result of the first yq command: ${yq_result}"
+# Execute the first yq command to retrieve the current image tag
+current_image_tag=$(yq e '.image.tag' "${VALUES_FILE}")
 
 # Check if the first yq command succeeded
-if [ $? -eq 0 ]; then
-    # Execute the second yq command to update the image tag
-    yq e ".image.tag = \"${IMAGE_NAME}\"" -i ${ENV_NAME}/${APP_NAME}/values.yaml
-
-    # Display a message indicating the update
-    echo "Updated image tag to: ${IMAGE_NAME}"
-else
-    # Display an error message if the first yq command failed
-    echo "Error: Unable to retrieve the current image tag. Exiting."
+if [ $? -ne 0 ]; then
+    # Display an error message and exit if the first yq command failed
+    echo "Error: Unable to retrieve the current image tag from ${VALUES_FILE}. Exiting."
     exit 1
 fi
+
+# Display the result of the first yq command
+echo "Current image tag: ${current_image_tag}"
+
+# Execute the second yq command to update the image tag
+yq e ".image.tag = \"${IMAGE_NAME}\"" -i "${VALUES_FILE}"
+
+# Display a message indicating the update
+echo "Updated image tag to: ${IMAGE_NAME}"
