@@ -6,13 +6,11 @@ APP_NAME=$2
 IMAGE_NAME=$3
 VALUES_FILE="${CODEBUILD_SRC_DIR}/${ENV_NAME}/${APP_NAME}/values.yaml"
 
-grep -i "image" ${VALUES_FILE}
 # Execute the first yq command to retrieve the current image tag
 current_image_tag=$(yq e '.image.tag' "${VALUES_FILE}")
 
 # Check if the first yq command succeeded
 if [ $? -ne 0 ]; then
-    # Display an error message and exit if the first yq command failed
     echo "Error: Unable to retrieve the current image tag from ${VALUES_FILE}. Exiting."
     exit 1
 fi
@@ -22,6 +20,14 @@ echo "Current image tag: ${current_image_tag}"
 
 # Execute the second yq command to update the image tag
 yq e ".image.tag = \"${IMAGE_NAME}\"" -i "${VALUES_FILE}"
+
+# Check if the second yq update command succeeded
+if [ $? -ne 0 ]; then
+    echo "Error: Unable to update the image tag in ${VALUES_FILE}. Exiting."
+    exit 1
+fi
+
+grep "tag" ${VALUES_FILE}
 
 # Display a message indicating the update
 echo "Updated image tag to: ${IMAGE_NAME}"
