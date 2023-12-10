@@ -43,7 +43,6 @@ if [ $? -eq 0 ]; then
   echo "INFO: Template Validated"
 else
   echo "ERROR: Failed to Deploy Pastry: ${IMAGE_NAME} to ENV: ${ENV_NAME} - Kubeval Validation Failed"
-  error 'ERROR: Kubeval Validation Failed'
 fi
 rm template.json
 

@@ -11,24 +11,25 @@ current_image_tag=$(yq e '.image.tag' "${VALUES_FILE}")
 
 # Check if the first yq command succeeded
 if [ $? -ne 0 ]; then
-    echo "Error: Unable to retrieve the current image tag from ${VALUES_FILE}. Exiting."
+    echo "ERROR: Unable to retrieve the current image tag from ${VALUES_FILE}. Exiting."
     exit 1
 fi
 
 # Display the result of the first yq command
-echo "Current image tag: ${current_image_tag}"
+echo "INFO: Current image tag: ${current_image_tag}"
 
 # Execute the second yq command to update the image tag in values file
 yq e ".image.tag = \"${IMAGE_NAME}\"" -i "${VALUES_FILE}"
 
-# Check if the  yq update command succeeded
+# Check if the yq update command succeeded
 if [ $? -ne 0 ]; then
-    echo "Error: Unable to update the image tag in ${VALUES_FILE}. Exiting."
+    echo "ERROR: Unable to update the image tag in ${VALUES_FILE}. Exiting."
     exit 1
 fi
 
-echo "Lines containing 'tag' in ${VALUES_FILE} after update:"
+# Display lines containing 'tag' in ${VALUES_FILE} after the update
+echo "INFO: Lines containing 'tag' in ${VALUES_FILE} after update:"
 grep -w "tag" ${VALUES_FILE}
 
 # Display a message indicating the update
-echo "Updated image tag to: ${IMAGE_NAME}"
+echo "INFO: Updated image tag to: ${IMAGE_NAME}"
