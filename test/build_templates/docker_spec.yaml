@@ -19,3 +19,7 @@ phases:
       - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
       - chmod +x docker_image_check.sh
       - ./docker_image_check.sh "${APP_NAME}" "${IMAGE_NAME}" "us-east-1"
+
+artifacts:
+  files:
+    - '**/*'

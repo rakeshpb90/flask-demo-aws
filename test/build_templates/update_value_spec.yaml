@@ -18,3 +18,6 @@ phases:
      - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
      - chmod +x update_value_spec.sh
      - ./update_value_spec.sh $ENV_NAME $APP_NAME $IMAGE_NAME
+artifacts:
+  files:
+    - '**/*'
