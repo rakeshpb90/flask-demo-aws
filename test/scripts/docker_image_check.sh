@@ -12,10 +12,13 @@ echo "IMAGE_NAME: ${IMAGE_NAME}"
 # Check if the Docker image exists in the registry
 IMAGE_EXIST=$(aws ecr describe-images --repository-name "${APP_NAME}" --image-ids imageTag="${IMAGE_NAME}" --region ${REGION})
 
+# Print the image name in the log
+echo "Docker Image Name: ${APP_NAME}/${IMAGE_NAME}"
+
 # Check if the image exists
 if [ -n "$IMAGE_EXIST" ]; then
-  echo "Image exists"
+  echo "Image ${APP_NAME}/${IMAGE_NAME} exists"
 else
-  echo "Image does not exist"
+  echo "Image ${APP_NAME}/${IMAGE_NAME} does not exist"
   exit 1
 fi
