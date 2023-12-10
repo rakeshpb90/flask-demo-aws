@@ -52,7 +52,7 @@ rm template.json
 # echo "${APP_DIFF}"
 
 # # Upgrade Deployment
-# HELM_UPGRADE=$(helmfile -e ${ENV_NAME} --kube-context arn:aws:eks:us-east-1:291053455966:cluster/eks-epx-prod-blue --selector name=${APP} ${COMMAND})
+# HELM_UPGRADE=$(helmfile -e ${ENV_NAME} --kube-context  ${CLUSTER} --selector name=${APP} ${COMMAND})
 # echo "${HELM_UPGRADE}"
 # if [ "${HELM_UPGRADE}" -eq 0 ]; then
 #   echo "INFO: Helm ${COMMAND} Completed"
