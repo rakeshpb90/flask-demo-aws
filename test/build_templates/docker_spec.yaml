@@ -1,0 +1,21 @@
+version: 0.2
+env:
+  variables:
+    SCRIPT_DIR: "./test/scripts"
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      # Install Helmfile
+      - curl -L https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz -o /tmp/helm.tar.gz
+      - tar -zxvf /tmp/helm.tar.gz -C /tmp
+      - mv /tmp/linux-amd64/helm /usr/local/bin/helmfile
+      - rm -rf /tmp/linux-amd64 /tmp/helm.tar.gz
+
+  build:
+    commands:
+      - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
+      - chmod +x docker_image_check.sh
+      - ./docker_image_check.sh "${APP_NAME}" "${IMAGE_NAME}" "us-east-1"

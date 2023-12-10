@@ -1,0 +1,20 @@
+version: 0.2
+env:
+  variables:
+    SCRIPT_DIR: "./test/scripts"
+
+phases:
+  install:
+    commands:
+      # Install yq
+      - curl -L https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 -o /usr/local/bin/yq
+      - chmod +x /usr/local/bin/yq
+
+  pre_build:
+    commands:
+
+  build:
+    commands:
+     - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
+     - chmod +x update_value_spec.sh
+     - ./update_value_spec.sh $ENV_NAME $APP_NAME $IMAGE_NAME
