@@ -18,10 +18,10 @@ fi
 # Display the result of the first yq command
 echo "Current image tag: ${current_image_tag}"
 
-# Execute the second yq command to update the image tag
+# Execute the second yq command to update the image tag in values file
 yq e ".image.tag = \"${IMAGE_NAME}\"" -i "${VALUES_FILE}"
 
-# Check if the second yq update command succeeded
+# Check if the  yq update command succeeded
 if [ $? -ne 0 ]; then
     echo "Error: Unable to update the image tag in ${VALUES_FILE}. Exiting."
     exit 1

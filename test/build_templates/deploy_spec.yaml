@@ -1,0 +1,33 @@
+version: 0.2
+env:
+  variables:
+    SCRIPT_DIR: "./test/scripts"
+
+phases:
+  install:
+    commands:
+      # Install Helmfile
+      - curl -L https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+      - curl -L https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz -o /tmp/helm.tar.gz
+      - tar -zxvf /tmp/helm.tar.gz -C /tmp
+      - mv /tmp/linux-amd64/helm /usr/local/bin/helm
+      - rm -rf /tmp/linux-amd64 /tmp/helm.tar.gz
+      - helm version --client
+      - curl -L https://github.com/helmfile/helmfile/releases/download/v0.159.0/helmfile_0.159.0_linux_amd64.tar.gz -o /tmp/helmfile_0.159.0_linux_amd64.tar.gz
+      - tar -zxvf /tmp/helmfile_0.159.0_linux_amd64.tar.gz -C /tmp
+      - chmod +x /usr/local/bin/helmfile
+      - helmfile --version
+      - curl -L https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-linux-amd64.tar.gz -o /tmp/kubeval-linux-amd64.tar.gz
+      - tar -zxvf /tmp/kubeval-linux-amd64.tar.gz -C /tmp
+      - chmod +x /usr/local/bin/kubeval
+      - kubeval --version
+
+  build:
+    commands:
+      - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
+      - chmod +x docker_image_check.sh
+      - ./deploy_script.sh $CLUSTER $ENV_NAME $APP_NAME $COMMAND $NAMESPACE
+
+artifacts:
+  files:
+    - '**/*'
