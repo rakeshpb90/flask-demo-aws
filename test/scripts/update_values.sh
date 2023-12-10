@@ -6,8 +6,9 @@ APP_NAME=$2
 IMAGE_NAME=$3
 VALUES_FILE="${CODEBUILD_SRC_DIR}/${ENV_NAME}/${APP_NAME}/values.yaml"
 
+grep -i "image" ${VALUES_FILE}
 # Execute the first yq command to retrieve the current image tag
-current_image_tag=$(yq eval '.image.tag' "${VALUES_FILE}")
+current_image_tag=$(yq e '.image.tag' "${VALUES_FILE}")
 
 # Check if the first yq command succeeded
 if [ $? -ne 0 ]; then
