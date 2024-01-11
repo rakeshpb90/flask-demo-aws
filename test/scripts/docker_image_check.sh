@@ -12,14 +12,14 @@ echo "INFO: IMAGE_NAME: ${IMAGE_NAME}"
 echo "INFO: Docker Image Name: ${APP_NAME}/${IMAGE_NAME}"
 
 
-# Extract the tag version
-TAG_VERSION=$(grep "image:" values.yaml | grep "tag:" | awk '{print $2}')
+# Extract the image name from the file
+IMAGE_NAME=$(awk '/tag:/ {print $2}' values.yaml)
 
-# Check if the tag version is found
-if [ -n "$TAG_VERSION" ]; then
-  echo "INFO: Tag version found: ${TAG_VERSION}"
+# Check if the image name is found
+if [ -n "$IMAGE_NAME" ]; then
+  echo "INFO: Image name found: ${IMAGE_NAME}"
 else
-  echo "ERROR: Tag version not found in the file!"
+  echo "ERROR: Image name not found in the file!"
   exit 1
 fi
 
