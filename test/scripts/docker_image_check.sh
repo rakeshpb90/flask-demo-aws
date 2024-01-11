@@ -11,6 +11,18 @@ echo "INFO: IMAGE_NAME: ${IMAGE_NAME}"
 # Print the image name in the log
 echo "INFO: Docker Image Name: ${APP_NAME}/${IMAGE_NAME}"
 
+
+# Extract the tag version
+TAG_VERSION=$(grep "image:" values.yaml | grep "tag:" | awk '{print $2}')
+
+# Check if the tag version is found
+if [ -n "$TAG_VERSION" ]; then
+  echo "INFO: Tag version found: ${TAG_VERSION}"
+else
+  echo "ERROR: Tag version not found in the file!"
+  exit 1
+fi
+
 # Check if the Docker image exists in the registry
 IMAGE_EXIST=$(aws ecr describe-images --repository-name "${APP_NAME}" --image-ids imageTag="${IMAGE_NAME}" --region ${REGION})
 
