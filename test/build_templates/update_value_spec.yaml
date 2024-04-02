@@ -17,7 +17,7 @@ phases:
     commands:
      - cd ${CODEBUILD_SRC_DIR}/${SCRIPT_DIR}
      - chmod +x update_values.sh
-     - ./update_values.sh $ENV_NAME $APP_NAME $IMAGE_NAME
+     - ./update_values.sh $ENV_NAME $APP $IMAGE_NAME
 artifacts:
   files:
     - '**/*'
