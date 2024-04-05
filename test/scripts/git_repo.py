@@ -101,6 +101,7 @@ def create_pull_request(github_repo, base_branch, compare_branch, title, body):
 
 def main():
     github_token = os.getenv('GITHUB_TOKEN')
+    print(github_token)
     github_repo_owner = os.getenv('GITHUB_REPO_OWNER')
     github_repo_name = os.getenv('GITHUB_REPO_NAME')
     app_name = os.getenv('APP')  
