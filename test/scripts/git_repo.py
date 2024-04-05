@@ -113,13 +113,18 @@ def main():
         print("Error: Please provide valid GitHub credentials in environment variables.")
         sys.exit(1)
 
-    repo = Repo(local_directory)
+
     clone_path = os.path.join(local_directory, "tmp", "repo_clone")
 
     # Create clone path directory if it doesn't exist
     if not os.path.exists(clone_path):
         os.makedirs(clone_path)
 
+    repo_url = f"https://{github_token}@github.com/{github_repo_owner}/{github_repo_name}.git"
+    repo = Repo.clone_from(repo_url, clone_path)
+    github = Github(github_token)
+    github_repo = github.get_user(github_repo_owner).get_repo(github_repo_name)
+    
     # Update Helm values file
     file_path = os.path.join(env_name, app_name, "values.yaml")
     helm_values_path = os.path.join(clone_path, file_path)
@@ -134,7 +139,7 @@ def main():
     # Create a pull request
     pull_request_title = f"Update Helm values file for the app {app_name} with new image tag {image_name}"
     pull_request_body = f"This pull request updates the Helm values file with the new image tag of the app - {app_name}"
-    pr = create_pull_request(repo, main_branch, new_branch.name, pull_request_title, pull_request_body)
+    pr = create_pull_request(github_repo, main_branch, new_branch.name, pull_request_title, pull_request_body)
 
 if __name__ == "__main__":
     main()
