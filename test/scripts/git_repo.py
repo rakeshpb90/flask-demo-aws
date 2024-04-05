@@ -4,7 +4,7 @@ from github import Github, GithubException
 from git import Repo, GitCommandError
 from ruamel.yaml import YAML
 import sys
-
+import shutil 
 def update_image_tag(file_path, image_tag):
     """
     Update the 'tag' under the 'image' section in a YAML file.
@@ -36,42 +36,34 @@ def update_image_tag(file_path, image_tag):
         yaml.dump(data, file)
 
 def commit_and_push_changes(repo, commit_message, file_path, branch_name, image_tag):
-    """
-    Commit and push changes to a new branch in a Git repository.
-
-    Args:
-        repo (git.Repo): Git repository object.
-        commit_message (str): Commit message.
-        file_path (str): Path to the file to be committed.
-        branch_name (str): Name of the new branch.
-        image_tag (str): New image tag.
-    """
+    branch = repo.heads.main  # Replace "main" with your main branch name
     print(f"Branch name: {branch_name}")
     print(f"File path: {file_path}")
-
     # Create a new branch
     new_branch = repo.create_head(branch_name)
     new_branch.checkout()
     update_image_tag(file_path, image_tag)
 
-    # Check if there are differences
-    if not repo.is_dirty(path=file_path):
-        print("No changes detected. Skipping commit and push.")
-        sys.exit()
-
     # Stage the changes
     repo.index.add([file_path])
-
-    # Commit and push changes to the new branch
-    repo.index.commit(commit_message)
-    try:
-        origin = repo.remote(name='origin')
-        origin.push(refspec=f"refs/heads/{branch_name}:refs/heads/{branch_name}")
-        print(f"Changes pushed to branch {branch_name}")
-    except GitCommandError as e:
-        print(f"Error: Failed to push changes - {e}")
-        sys.exit(1)
-
+    
+    # Check if there are differences
+    diff = repo.index.diff("HEAD")
+    print(diff)
+    
+    if diff:
+        # Stage, commit, and push changes to the new branch
+        repo.index.commit(commit_message)
+        try:
+            origin = repo.remote(name='origin')
+            origin.push(refspec=f"refs/heads/{branch_name}:refs/heads/{branch_name}")
+            print(f"Changes pushed to branch {branch_name}")
+        except Exception as e:
+            print(f"Error: Failed to push changes - {e}")
+            sys.exit(1)        
+    else:
+        print("No changes detected. Skipping commit and push.")
+        sys.exit()
     return new_branch
 
 def create_pull_request(github_repo, base_branch, compare_branch, title, body):
@@ -117,6 +109,9 @@ def main():
 
     clone_path = os.path.join(local_directory, "tmp", "repo_clone")
 
+    if os.path.exists(clone_path):
+        shutil.rmtree(clone_path)
+            
     # Create clone path directory if it doesn't exist
     if not os.path.exists(clone_path):
         os.makedirs(clone_path)
