@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       - cd ${CODEBUILD_SRC_DIR}
-      - yum update -y && yum install -y python3
+      - yum update -y && yum install -y python3  python3-devel
       - python3 -m venv venv
       - source venv/bin/activate
       - pip3 install -r requirements.txt
