@@ -1,0 +1,9 @@
+This CodeDeploy pipeline consists of four stages: Image Checker, Update Spec, Deploy Spec, and Git Spec. Here's a breakdown of each stage:
+
+Image Checker: This stage verifies if the required Docker image exists in the specified region. It executes a script (docker_image_check.sh) that checks the existence of the Docker image. This stage generates output indicating the status of the Docker image, whether it's available or needs to be updated before deployment.
+
+Update Spec: This stage is responsible for updating the Helm values of the specific app[] with the user-supplied Docker image. It executes a script (update_values.sh)  to update the Docker image in Helm values files based on the current environment, application, and the Docker image provided by the user.
+
+Deploy Spec: This stage deploys the application using Helmfile. It executes a deployment script (deploy_script.sh) with parameters specifying the target cluster, environment, application name, deployment command, and namespace.
+
+Git Spec: This stage automates the process of pushing local Docker image changes to a remote Git repository. It involves creating a separate branch, pushing the changes to that branch, creating a pull request (PR), and then merging the PR. It executes a Python script (git_repo.py) designed to automate the Git workflow.

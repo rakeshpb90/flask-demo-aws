@@ -5,35 +5,50 @@ from git import Repo, GitCommandError
 from ruamel.yaml import YAML
 import sys
 import shutil 
+import subprocess
+# def update_image_tag(file_path, image_tag):
+#     """
+#     Update the 'tag' under the 'image' section in a YAML file.
+
+#     Args:
+#         file_path (str): Path to the YAML file.
+#         image_tag (str): New image tag.
+
+#     Raises:
+#         FileNotFoundError: If the YAML file does not exist.
+#     """
+#     yaml = YAML()
+#     try:
+#         with open(file_path, 'r') as file:
+#             data = yaml.load(file)
+#     except FileNotFoundError:
+#         print(f"Error: YAML file '{file_path}' not found.")
+#         sys.exit(1)
+
+#     # Ensure the 'image' section exists
+#     if 'image' not in data:
+#         data['image'] = {}
+
+#     # Update the 'tag' under the 'image' section
+#     data['image']['tag'] = image_tag
+
+#     with open(file_path, 'w') as file:
+#         # Dump the data back to the file preserving comments
+#         yaml.dump(data, file)
+
 def update_image_tag(file_path, image_tag):
-    """
-    Update the 'tag' under the 'image' section in a YAML file.
-
-    Args:
-        file_path (str): Path to the YAML file.
-        image_tag (str): New image tag.
-
-    Raises:
-        FileNotFoundError: If the YAML file does not exist.
-    """
-    yaml = YAML()
     try:
-        with open(file_path, 'r') as file:
-            data = yaml.load(file)
+        # Execute the first yq command to retrieve the current image tag
+        current_image_tag = subprocess.check_output(['yq', 'e', '.image.tag', file_path]).decode().strip()
+
+        print(f"INFO: Current image tag: {current_image_tag}")
+
+        # Execute the second yq command to update the image tag in the values file
+        subprocess.run(['yq', 'e', f".image.tag = \"{image_tag}\"", '-i', file_path])
+
+        print("INFO: Image tag updated successfully.")
     except FileNotFoundError:
         print(f"Error: YAML file '{file_path}' not found.")
-        sys.exit(1)
-
-    # Ensure the 'image' section exists
-    if 'image' not in data:
-        data['image'] = {}
-
-    # Update the 'tag' under the 'image' section
-    data['image']['tag'] = image_tag
-
-    with open(file_path, 'w') as file:
-        # Dump the data back to the file preserving comments
-        yaml.dump(data, file)
 
 def commit_and_push_changes(repo, commit_message, file_path, branch_name, image_tag):
     branch = repo.heads.main  # Replace "main" with your main branch name

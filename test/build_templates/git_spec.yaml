@@ -9,6 +9,7 @@ phases:
       python: 3.9
   pre_build:
     commands:
+      - curl -L https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
       - cd ${CODEBUILD_SRC_DIR}
       - apt-get update && apt-get install -y python3
       - python3 -m venv venv
