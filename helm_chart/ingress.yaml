@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80} ]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/tags: createdBy=aws-controller
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/group.name: sentinel-group
+  name: dev-operatorv2-sentinel-ingress-controller
+  namespace: operatorv2-dev
+spec:
+  rules:
+    - host: operatorv2.dev.sentinel.mysite.io
+      http:
+        paths:
+          - path: /*
+            backend:
+              servicePort: 80
+              serviceName: sentinel-srv
